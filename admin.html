@@ -16,7 +16,7 @@
       background: radial-gradient(ellipse at top, #1a1a1a 0%, #000 70%);
       padding: 16px;
     }
-   .header {
+  .header {
       background: linear-gradient(145deg, rgba(26,15,8,0.9) 0%, rgba(45,24,16,0.9) 100%);
       backdrop-filter: blur(20px);
       padding: 24px;
@@ -33,18 +33,18 @@
       font-weight: 900;
       text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
     }
-   .subtitle {
+  .subtitle {
       opacity: 0.9;
       font-size: 1rem;
       letter-spacing: 0.5px;
     }
-   .stats {
+  .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
       margin: 24px 0;
     }
-   .stat-card {
+  .stat-card {
       background: linear-gradient(145deg, rgba(26,15,8,0.8) 0%, rgba(45,24,16,0.8) 100%);
       backdrop-filter: blur(10px);
       padding: 20px 16px;
@@ -54,21 +54,21 @@
       text-align: center;
       transition: transform 0.2s;
     }
-   .stat-card:active { transform: scale(0.97); }
-   .stat-emoji { font-size: 1.8rem; margin-bottom: 8px; }
-   .stat-number {
+  .stat-card:active { transform: scale(0.97); }
+  .stat-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+  .stat-number {
       font-size: 2.2rem;
       color: #FFD700;
       font-weight: 900;
       letter-spacing: -1px;
     }
-   .stat-label {
+  .stat-label {
       font-size: 0.85rem;
       opacity: 0.8;
       margin-top: 4px;
       font-weight: 600;
     }
-   .section-title {
+  .section-title {
       font-size: 1.3rem;
       font-weight: 800;
       color: #FFD700;
@@ -77,7 +77,7 @@
       align-items: center;
       gap: 8px;
     }
-   .table-wrap {
+  .table-wrap {
       background: rgba(26,15,8,0.6);
       backdrop-filter: blur(10px);
       border-radius: 20px;
@@ -104,27 +104,26 @@
       letter-spacing: 0.5px;
     }
     tr:last-child td { border-bottom: none; }
-   .status {
+  .status {
       padding: 6px 10px;
       border-radius: 10px;
       font-size: 0.75rem;
       font-weight: 800;
       display: inline-block;
-      cursor: pointer;
     }
-   .pending_mpesa {
+  .pending_mpesa {
       background: linear-gradient(145deg, #1e40af, #1e3a8a);
       box-shadow: 0 2px 8px rgba(30, 64, 175, 0.4);
     }
-   .pending_eft {
+  .pending_eft {
       background: linear-gradient(145deg, #7c2d12, #92400e);
       box-shadow: 0 2px 8px rgba(124, 45, 18, 0.4);
     }
-   .paid {
+  .paid {
       background: linear-gradient(145deg, #15803d, #166534);
       box-shadow: 0 2px 8px rgba(21, 128, 61, 0.4);
     }
-   .btn-group {
+  .btn-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
@@ -146,17 +145,17 @@
       transform: scale(0.96);
       box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
     }
-   .btn-secondary {
+  .btn-secondary {
       background: rgba(255, 215, 0, 0.15);
       color: #FFD700;
       border: 2px solid rgba(255, 215, 0, 0.4);
     }
-   .empty {
+  .empty {
       text-align: center;
       padding: 40px 20px;
       opacity: 0.6;
     }
-   .action-btn {
+  .action-btn {
       background: #FFD700;
       color: #000;
       border: none;
@@ -259,7 +258,7 @@
             <td>
               ${order.status!== 'paid'?
                 `<button class="action-btn" onclick="markPaid(${order.id})">Mark Paid</button>` :
-                '✅'
+                `<button class="action-btn" onclick="window.open('https://wa.me/${order.phone.replace('+','')}','_blank')">WhatsApp</button>`
               }
             </td>
           </tr>
@@ -297,8 +296,8 @@
       fetch(SUPABASE_URL + '?select=email', {
         headers: { 'apikey': SUPABASE_KEY }
       })
-     .then(r => r.json())
-     .then(data => {
+    .then(r => r.json())
+    .then(data => {
         const emails = data.map(d => d.email).filter(e => e).join('\n');
         navigator.clipboard.writeText(emails);
         alert(`💛 Copied ${data.length} emails!\n\nPaste into Gmail for updates 🧡`);
@@ -308,4 +307,4 @@
     loadOrders();
   </script>
 </body>
-  </html>
+        </html>
