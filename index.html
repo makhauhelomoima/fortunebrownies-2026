@@ -9,6 +9,7 @@
     html, body {
       height: 100%;
       background: #000;
+      overflow: hidden;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -16,74 +17,83 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
-      min-height: 100vh;
-      background: radial-gradient(ellipse at center, #1a1a1a 0%, #000 100%);
+      background: radial-gradient(circle at 50% 30%, #1a1a1a 0%, #000 70%);
     }
     .container {
       width: 100%;
+      max-width: 100%;
       height: 100%;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      text-align: center;
     }
     .card {
       background: linear-gradient(145deg, #1a0f08 0%, #2d1810 100%);
-      padding: 40px 28px;
-      border-radius: 24px;
-      border: 2px solid #FFD700;
-      box-shadow: 0 0 40px rgba(255, 215, 0, 0.2), 0 8px 32px rgba(0,0,0,0.8);
-      margin: auto 0;
+      padding: 48px 24px 40px;
+      border-radius: 28px;
+      border: 3px solid #FFD700;
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.25), 0 12px 40px rgba(0,0,0,0.9);
+      width: 100%;
     }
     h1 { 
-      font-size: 2rem; 
-      margin-bottom: 12px;
-      line-height: 1.2;
-      font-weight: 800;
+      font-size: 2.2rem; 
+      margin-bottom: 16px;
+      line-height: 1.1;
+      font-weight: 900;
       color: #FFD700;
     }
     .tagline { 
-      font-size: 1rem; 
-      opacity: 0.9; 
-      margin-bottom: 32px;
+      font-size: 1.1rem; 
+      opacity: 0.95; 
+      margin-bottom: 36px;
       line-height: 1.4;
     }
     .price { 
-      font-size: 3.5rem; 
+      font-size: 4rem; 
       font-weight: 900; 
-      margin: 24px 0 32px;
+      margin: 28px 0 36px;
       color: #FFD700;
-      letter-spacing: -2px;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      letter-spacing: -3px;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
     }
     button {
       background: linear-gradient(145deg, #FFD700 0%, #E6C200 100%);
       color: #000;
       border: none;
-      padding: 20px 20px;
-      font-size: 1.15rem;
-      font-weight: 800;
-      border-radius: 16px;
+      padding: 22px 20px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      border-radius: 18px;
       cursor: pointer;
       width: 100%;
       transition: all 0.15s;
-      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 6px 24px rgba(255, 215, 0, 0.4);
+      margin-bottom: 12px;
     }
     button:active { 
-      transform: scale(0.96);
-      box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+      transform: scale(0.95);
+      box-shadow: 0 3px 12px rgba(255, 215, 0, 0.3);
     }
     button:disabled {
       opacity: 0.7;
       transform: scale(1);
     }
     .contact { 
-      margin-top: 24px; 
-      font-size: 0.95rem; 
-      opacity: 0.9;
+      margin-top: 16px; 
+      font-size: 1rem; 
+      opacity: 0.95;
       letter-spacing: 0.5px;
+    }
+    .contact a {
+      color: #FFD700;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .payment-methods {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 8px;
     }
   </style>
 </head>
@@ -96,10 +106,11 @@
       <div class="price">M250</div>
       
       <button onclick="buyKit()">
-        Buy Franchise Kit - Mpesa M250
+        Buy Franchise Kit - M250
       </button>
+      <p class="payment-methods">Accepts Mpesa & Post Bank EFT</p>
       
-      <p class="contact">WhatsApp: +26657031600</p>
+      <p class="contact">WhatsApp: <a href="https://wa.me/26657031600">+26657031600</a></p>
     </div>
   </div>
 
@@ -119,7 +130,7 @@
       const phone = prompt('Enter your Mpesa number: +266');
       if (!phone) return;
       
-      const method = confirm('Pay with MPESA?\nOK = Mpesa M250\nCancel = Post Bank EFT M250');
+      const method = confirm('Choose Payment Method:\n\nOK = MPESA M250\nCancel = POST BANK EFT M250');
       
       const btn = document.querySelector('button');
       btn.innerHTML = 'Processing...';
@@ -151,7 +162,7 @@
         btn.innerHTML = 'Order Received ✅';
       } catch (err) {
         alert(`Error. WhatsApp ${MPESA_NUMBER} to order directly.`);
-        btn.innerHTML = 'Buy Franchise Kit - Mpesa M250';
+        btn.innerHTML = 'Buy Franchise Kit - M250';
         btn.disabled = false;
       }
     }
