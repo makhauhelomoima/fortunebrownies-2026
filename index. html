@@ -5,20 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Fortune Brownies ©2026 - M60 to M240</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #1a1a1a; color: #fff; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #1a1a1a; 
+            color: #fff; 
+            line-height: 1.6;
+        }
         .hero { text-align: center; padding: 40px 0; }
         h1 { color: #D4AF37; font-size: 2.5em; margin: 0; }
-        .price { font-size: 3em; color: #D4AF37; margin: 20px 0; font-weight: bold; }
-        .btn { background: #D4AF37; color: #000; padding: 20px 40px; font-size: 1.2em; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
-        .btn:hover { background: #B8941F; }
-        .features { background: #2a2a2a; padding: 20px; border-radius: 8px; margin: 30px 0; }
-        li { margin: 10px 0; }
+        .tagline { opacity: 0.9; margin: 10px 0 30px 0; }
+        .price { font-size: 3.5em; color: #D4AF37; margin: 20px 0; font-weight: 800; }
+        .btn { 
+            background: #D4AF37; 
+            color: #000; 
+            padding: 20px 40px; 
+            font-size: 1.2em; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-weight: 700; 
+            transition: 0.2s;
+        }
+        .btn:hover { background: #B8941F; transform: translateY(-2px); }
+        .features { 
+            background: #2a2a2a; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin: 30px 0; 
+            border: 1px solid #333;
+        }
+        .features h3 { color: #D4AF37; margin-top: 0; }
+        ul { padding-left: 20px; }
+        li { margin: 12px 0; }
+        .footer { text-align: center; margin-top: 40px; opacity: 0.6; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div class="hero">
         <h1>🍫 The Fortune Brownies ©2026</h1>
-        <p>Lesotho's first digital franchise kit</p>
+        <p class="tagline">Lesotho's first digital franchise kit</p>
         <div class="price">M250</div>
         <p><strong>Turn M60 into M240. Every hour.</strong></p>
     </div>
@@ -26,13 +55,13 @@
     <div class="features">
         <h3>What You Get Instantly:</h3>
         <ul>
-            <li>✓ Official License Certificate</li>
-            <li>✓ Secret Fudgy Recipe: M60→M240</li>
-            <li>✓ 50 Ready-to-Print Fortune Slips</li>
-            <li>✓ 50 Viral WhatsApp Status Hooks</li>
-            <li>✓ Taxi Rank Sales Script</li>
-            <li>✓ Hiring & Scaling Blueprint</li>
-            <li>✓ 12-Month Area Rights</li>
+            <li>✓ Official License Certificate - Your territory, your rules</li>
+            <li>✓ Secret Fudgy Recipe - M60 cost → M240 retail</li>
+            <li>✓ 50 Ready-to-Print Fortune Slips - Sealed in every brownie</li>
+            <li>✓ 50 Viral WhatsApp Status Hooks - Customers sell for you</li>
+            <li>✓ Taxi Rank Sales Script - Tested at Maseru ranks</li>
+            <li>✓ Hiring & Scaling Blueprint - From 1 pan to 5 employees</li>
+            <li>✓ 12-Month Area Rights - You own your zone</li>
         </ul>
     </div>
 
@@ -40,34 +69,23 @@
         Buy Franchise Kit - Mpesa M250
     </button>
 
-    <p style="text-align: center; margin-top: 30px; opacity: 0.7;">
+    <div class="footer">
         Digital download. Instant email delivery. Lifetime rights.<br>
         No PayPal. No Permission. No Problems.
-    </p>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // REPLACE THESE 2 LINES WITH YOUR KEYS
         const SUPABASE_URL = 'https://lsljnbljovnaclinwxva.supabase.co'
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzbGpuYmxqb3ZuYWNsaW53eHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwNjU5NjAsImV4cCI6MjA5MjY0MTk2MH0.tzouGrC6paS91NFkXNSWI8ZWlMX2RPZlR2W3uspdrr4'//
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzbGpuYmxqb3ZuYWNsaW53eHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0NjI4MDAsImV4cCI6MjA2MDAzODgwMH0.REPLACE_WITH_YOUR_REAL_KEY'
         
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
         async function buyNow() {
-            const email = prompt("Enter email for PDF delivery:")
+            const email = prompt("Enter email for instant PDF delivery:")
             if(!email) return
-            const phone = prompt("Enter Mpesa number:")
-            if(!phone) return alert("Need Mpesa number boss")
+            if(!email.includes('@')) return alert("Enter valid email boss")
             
-            const { error } = await supabase
-                .from('leads')
-                .insert({ email: email, phone: phone, source: 'website' })
-                
-            if(error) {
-                alert('Error: ' + error.message + '. DM @fortunebrownies_ls')
-            } else {
-                alert('Success! We got your details. Mpesa instructions sent to ' + email)
-            }
-        }
-    </script>
-</body>
-</html>
+            const phone = prompt("Enter Mpesa number:")
+            if(!phone) return alert("Need Mpesa number for payment
