@@ -3,192 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Fortune Brownies ©2026</title>
+  <title>The Fortune Brownies ©2026 - Own Your Town</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      background: #000;
-      overflow: hidden;
+    /* FORT KNOX MOBILE CSS - 54% BATTERY APPROVED */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 50% 30%, #1a1a1a 0%, #000 70%);
-    }
-  .container {
+      background: #0a0a0a;
+      color: #f5f5f5;
+      line-height: 1.6;
+      padding: 0;
       width: 100%;
-      max-width: 100%;
-      height: 100%;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      overflow-x: hidden;
     }
-  .card {
-      background: linear-gradient(145deg, #1a0f08 0%, #2d1810 100%);
-      padding: 48px 24px 40px;
-      border-radius: 28px;
-      border: 3px solid #FFD700;
-      box-shadow: 0 0 60px rgba(255, 215, 0, 0.25), 0 12px 40px rgba(0,0,0,0.9);
+    .container {
       width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px 16px 100px 16px;
     }
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 16px;
-      line-height: 1.1;
-      font-weight: 900;
-      color: #FFD700;
-    }
-  .tagline {
-      font-size: 1.1rem;
-      opacity: 0.95;
-      margin-bottom: 36px;
-      line-height: 1.4;
-    }
-  .price {
-      font-size: 4rem;
-      font-weight: 900;
-      margin: 28px 0 36px;
-      color: #FFD700;
-      letter-spacing: -3px;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-    }
-    button {
-      background: linear-gradient(145deg, #FFD700 0%, #E6C200 100%);
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #000;
-      border: none;
-      padding: 22px 20px;
-      font-size: 1.2rem;
-      font-weight: 900;
-      border-radius: 18px;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.15s;
-      box-shadow: 0 6px 24px rgba(255, 215, 0, 0.4);
-      margin-bottom: 12px;
-    }
-    button:active {
-      transform: scale(0.95);
-      box-shadow: 0 3px 12px rgba(255, 215, 0, 0.3);
-    }
-    button:disabled {
-      opacity: 0.7;
-      transform: scale(1);
-    }
-  .contact {
-      margin-top: 16px;
-      font-size: 1rem;
-      opacity: 0.95;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
       letter-spacing: 0.5px;
     }
-  .contact a {
-      color: #FFD700;
-      text-decoration: none;
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h2 {
+      font-size: 20px;
       font-weight: 700;
+      margin: 32px 0 16px 0;
+      color: #fbbf24;
     }
-  .payment-methods {
-      font-size: 0.85rem;
-      opacity: 0.8;
-      margin-top: 8px;
+    p {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: #d4d4d4;
     }
-  .links {
-      margin-top: 24px;
+    .hero-img {
+      width: 100%;
+      border-radius: 16px;
+      margin: 20px 0;
+      border: 2px solid #f59e0b33;
+    }
+    .card {
+      background: #171717;
+      border: 1px solid #f59e0b33;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    ul {
+      list-style: none;
+      margin: 16px 0;
+    }
+    li {
+      padding: 10px 0 10px 28px;
+      position: relative;
+      font-size: 15px;
+      border-bottom: 1px solid #262626;
+    }
+    li:last-child { border-bottom: none; }
+    li:before {
+      content: "🍫";
+      position: absolute;
+      left: 0;
+      top: 10px;
+    }
+    .bank-details {
+      background: #0f0f0f;
+      border: 1px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .bank-details strong { color: #fbbf24; }
+    
+    /* M250 BUTTON - THUMB WEAPON */
+    .m250-btn {
+      position: fixed;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      width: calc(100% - 32px);
+      max-width: 448px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      border: none;
+      border-radius: 16px;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4);
+      z-index: 999;
+      transition: transform 0.1s;
+    }
+    .m250-btn:active { transform: scale(0.98); }
+    
+    .footer-links {
       display: flex;
-      gap: 16px;
+      gap: 12px;
+      margin-top: 40px;
       justify-content: center;
-      font-size: 0.9rem;
     }
-  .links a {
-      color: #FFD700;
+    .footer-links a {
+      color: #a3a3a3;
+      font-size: 14px;
       text-decoration: none;
-      font-weight: 700;
+      padding: 8px 12px;
+      border: 1px solid #262626;
+      border-radius: 8px;
+    }
+    .location {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: #737373;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <span class="badge">FORT KNOX MODE 🔒</span>
+    
+    <h1>The Fortune Brownies ©2026</h1>
+    <p><strong>Own your town. One tray at a time.</strong></p>
+    <p>M250 Franchise Kit. 0% fees. Direct to your bank. Fortune University included.</p>
+
     <div class="card">
-      <h1>🍫 The Fortune Brownies ©2026</h1>
-      <p class="tagline">Own your town. One tray at a time.</p>
+      <h2>What You Get for M250:</h2>
+      <ul>
+        <li>Secret recipe + tray costing calculator</li>
+        <li>Fortune University: 7 video modules</li>
+        <li>Private WhatsApp: Fort Knox Mode 🔒</li>
+        <li>Canva flyers + WhatsApp scripts</li>
+        <li>HQ Dashboard access</li>
+        <li>Personal voice note welcome from Makhauhelo</li>
+      </ul>
+    </div>
 
-      <div class="price">M250</div>
-
-      <button onclick="buyKit()">
-        Buy Franchise Kit - M250
-      </button>
-      <p class="payment-methods">Direct: Mpesa & Post Bank EFT | 0% Fees</p>
-
-      <p class="contact">WhatsApp: <a href="https://wa.me/26657031600">+26657031600</a></p>
-
-      <div class="links">
-        <a href="/learn.html">🎓 Fortune University</a>
-        <a href="/admin.html">👑 HQ Login</a>
+    <div class="card">
+      <h2>How to Join:</h2>
+      <p><strong>Step 1:</strong> Pay M250 to:</p>
+      <div class="bank-details">
+        <strong>Bank:</strong> Standard Lesotho Bank<br>
+        <strong>Account:</strong> 1036202900018<br>
+        <strong>Name:</strong> Makhauhelo Moima<br>
+        <strong>Ref:</strong> Your WhatsApp Number
       </div>
+      <p><strong>Step 2:</strong> WhatsApp proof to <strong>+26657031600</strong></p>
+      <p><strong>Step 3:</strong> Get approved + instant access to Fort Knox</p>
+    </div>
+
+    <div class="card">
+      <h2>Why Not Paddle or Stripe?</h2>
+      <p>KFC doesn’t use middlemen for secret recipe. Neither do we.</p>
+      <p><strong>0% fees. 100% yours.</strong> Direct Mpesa/EFT to 1036202900018.</p>
+      <p>Your money hits my bank in 2 mins. No 30-day hold. No 20% cut.</p>
+    </div>
+
+    <div class="location">
+      📍 Bonhomme, Maseru → Your town next 🇱🇸
+    </div>
+
+    <div class="footer-links">
+      <a href="/admin.html">HQ Login</a>
+      <a href="/learn.html">Fortune University</a>
+      <a href="https://wa.me/26657031600">WhatsApp Me</a>
     </div>
   </div>
 
-  <script>
-    const BANK_DETAILS = {
-      bank: 'Lesotho Post Bank',
-      account: '1036202900018',
-      name: 'Makhauhelo Moima',
-      branch: 'Bonhomme, Maseru'
-    };
+  <!-- STICKY M250 BUTTON -->
+  <a href="https://wa.me/26657031600?text=I%20paid%20M250%20for%20Fortune%20Brownies.%20My%20proof:" class="m250-btn">
+    Buy Franchise Kit - M250 🍫
+  </a>
 
-    const MPESA_NUMBER = '+26657031600';
-    const SUPABASE_URL = 'https://rjbiiqamdgvibazpmmzx.supabase.co/rest/v1/leads';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqYmlpcWFtZGd2aWJhenBtbXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNTU5NDcsImV4cCI6MjA2OTgzMTk0N30.T8HYkA2C4wMJW21DDIOZcMSWUkHuwX9gZV4FPoAOuRA';
-
-    async function buyKit() {
-      const email = prompt('Enter your email:');
-      if (!email) return;
-      const phone = prompt('Enter your Mpesa number: +266');
-      if (!phone) return;
-
-      const method = confirm('Choose Payment Method:\n\nOK = MPESA M250 - Instant\nCancel = POST BANK EFT M250 - Same Day');
-
-      const btn = document.querySelector('button');
-      btn.innerHTML = 'Processing...';
-      btn.disabled = true;
-
-      try {
-        await fetch(SUPABASE_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY
-          },
-          body: JSON.stringify({
-            email: email,
-            phone: phone,
-            amount: 250,
-            currency: 'M',
-            status: method? 'pending_mpesa' : 'pending_eft',
-            payment_method: method? 'mpesa' : 'postbank_eft'
-          })
-        });
-
-        if (method) {
-          alert(`MPESA M250 💛\n\n1. Go to Mpesa Menu\n2. Send Money → ${MPESA_NUMBER}\n3. Amount: M250\n4. Reference: ${phone}\n\nMoney lands instantly in my account.\nI'll WhatsApp you when confirmed.`);
-        } else {
-          alert(`LESOTHO POST BANK M250 🧡\n\nBank: ${BANK_DETAILS.bank}\nAcc: ${BANK_DETAILS.account}\nName: ${BANK_DETAILS.name}\nBranch: ${BANK_DETAILS.branch}\nRef: ${phone}\n\nEFT clears same day.\nSend proof to WhatsApp ${MPESA_NUMBER}`);
-        }
-
-        btn.innerHTML = 'Order Received ✅';
-        setTimeout(() => {
-          btn.innerHTML = 'Buy Franchise Kit - M250';
-          btn.disabled = false;
-        }, 3000);
-      } catch (err) {
-        alert(`Error. WhatsApp ${MPESA_NUMBER} to order directly.`);
-        btn.innerHTML = 'Buy Franchise Kit - M250';
-        btn.disabled = false;
-      }
-    }
-  </script>
 </body>
-        </html>
+                                                            </html>
