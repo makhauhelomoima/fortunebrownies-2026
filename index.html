@@ -90,44 +90,30 @@
   </div>
 
   <script>
+    const BANK_DETAILS = {
+      bank: 'Lesotho Post Bank',
+      account: '1036202900018', 
+      name: 'Makhauhelo Moima',
+      branch: 'Bonhomme, Maseru'
+    };
+    
+    const MPESA_NUMBER = '+26657031600';
+
     async function buyKit() {
       const email = prompt('Enter your email:');
       if (!email) return;
       const phone = prompt('Enter your Mpesa number: +266');
       if (!phone) return;
       
+      const method = confirm('Pay with MPESA?\nOK = Mpesa M250\nCancel = Post Bank EFT M250');
+      
       const btn = document.querySelector('button');
       btn.innerHTML = 'Processing...';
       btn.disabled = true;
       
       try {
-        const res = await fetch('https://rjbiiqamdgvibazpmmzx.supabase.co/rest/v1/leads', {
+        await fetch('https://rjbiiqamdgvibazpmmzx.supabase.co/rest/v1/leads', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqYmlpcWFtZGd2aWJhenBtbXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNTU5NDcsImV4cCI6MjA2OTgzMTk0N30.T8HYkA2C4wMJW21DDIOZcMSWUkHuwX9gZV4FPoAOuRA'
-          },
-          body: JSON.stringify({
-            email: email,
-            phone: phone,
-            amount: 250,
-            currency: 'M',
-            status: 'pending_mpesa'
-          })
-        });
-        
-        if (res.ok) {
-          alert('Order received! We will WhatsApp you Mpesa details for M250.');
-          btn.innerHTML = 'Order Received ✅';
-        } else {
-          throw new Error('Failed');
-        }
-      } catch (err) {
-        alert('Error. WhatsApp +26657031600 to order directly.');
-        btn.innerHTML = 'Buy Franchise Kit - Mpesa M250';
-        btn.disabled = false;
-      }
-    }
-  </script>
-</body>
-</html>
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqYmlpcWFtZGd2aWJhenBtbXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ
