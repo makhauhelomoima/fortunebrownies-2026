@@ -1,91 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Fortune Brownies ©2026 - M60 to M240</title>
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
-            max-width: 600px; 
-            margin: 0 auto; 
-            padding: 20px; 
-            background: #1a1a1a; 
-            color: #fff; 
-            line-height: 1.6;
-        }
-        .hero { text-align: center; padding: 40px 0; }
-        h1 { color: #D4AF37; font-size: 2.5em; margin: 0; }
-        .tagline { opacity: 0.9; margin: 10px 0 30px 0; }
-        .price { font-size: 3.5em; color: #D4AF37; margin: 20px 0; font-weight: 800; }
-        .btn { 
-            background: #D4AF37; 
-            color: #000; 
-            padding: 20px 40px; 
-            font-size: 1.2em; 
-            border: none; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            width: 100%; 
-            font-weight: 700; 
-            transition: 0.2s;
-        }
-        .btn:hover { background: #B8941F; transform: translateY(-2px); }
-        .features { 
-            background: #2a2a2a; 
-            padding: 25px; 
-            border-radius: 12px; 
-            margin: 30px 0; 
-            border: 1px solid #333;
-        }
-        .features h3 { color: #D4AF37; margin-top: 0; }
-        ul { padding-left: 20px; }
-        li { margin: 12px 0; }
-        .footer { text-align: center; margin-top: 40px; opacity: 0.6; font-size: 0.9em; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Fortune Brownies ©2026</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      background: rgba(0,0,0,0.3);
+      padding: 40px 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    .tagline { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; }
+    .price { 
+      font-size: 3rem; 
+      font-weight: bold; 
+      margin: 20px 0;
+      color: #FFD700;
+    }
+    button {
+      background: #FFD700;
+      color: #8B4513;
+      border: none;
+      padding: 18px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+    button:active { transform: scale(0.98); }
+    .contact { margin-top: 20px; font-size: 0.9rem; opacity: 0.8; }
+  </style>
 </head>
 <body>
-    <div class="hero">
-        <h1>🍫 The Fortune Brownies ©2026</h1>
-        <p class="tagline">Lesotho's first digital franchise kit</p>
-        <div class="price">M250</div>
-        <p><strong>Turn M60 into M240. Every hour.</strong></p>
-    </div>
-
-    <div class="features">
-        <h3>What You Get Instantly:</h3>
-        <ul>
-            <li>✓ Official License Certificate - Your territory, your rules</li>
-            <li>✓ Secret Fudgy Recipe - M60 cost → M240 retail</li>
-            <li>✓ 50 Ready-to-Print Fortune Slips - Sealed in every brownie</li>
-            <li>✓ 50 Viral WhatsApp Status Hooks - Customers sell for you</li>
-            <li>✓ Taxi Rank Sales Script - Tested at Maseru ranks</li>
-            <li>✓ Hiring & Scaling Blueprint - From 1 pan to 5 employees</li>
-            <li>✓ 12-Month Area Rights - You own your zone</li>
-        </ul>
-    </div>
-
-    <button class="btn" onclick="buyNow()">
-        Buy Franchise Kit - Mpesa M250
+  <div class="container">
+    <h1>🍫 The Fortune Brownies ©2026</h1>
+    <p class="tagline">Own your town. One tray at a time.</p>
+    
+    <div class="price">M250</div>
+    
+    <button onclick="buyKit()">
+      Buy Franchise Kit - Mpesa M250
     </button>
+    
+    <p class="contact">WhatsApp: +26657031600</p>
+  </div>
 
-    <div class="footer">
-        Digital download. Instant email delivery. Lifetime rights.<br>
-        No PayPal. No Permission. No Problems.
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // REPLACE THESE 2 LINES WITH YOUR KEYS
-        const SUPABASE_URL = 'https://lsljnbljovnaclinwxva.supabase.co'
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzbGpuYmxqb3ZuYWNsaW53eHZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0NjI4MDAsImV4cCI6MjA2MDAzODgwMH0.REPLACE_WITH_YOUR_REAL_KEY'
+  <script>
+    async function buyKit() {
+      const email = prompt('Enter your email:');
+      const phone = prompt('Enter your Mpesa number: +266');
+      
+      if (!email || !phone) {
+        alert('Please enter both email and phone');
+        return;
+      }
+      
+      const btn = document.querySelector('button');
+      btn.innerHTML = 'Processing...';
+      btn.disabled = true;
+      
+      try {
+        const res = await fetch('https://rjbiiqamdgvibazpmmzx.supabase.co/rest/v1/leads', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqYmlpcWFtZGd2aWJhenBtbXp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNTU5NDcsImV4cCI6MjA2OTgzMTk0N30.T8HYkA2C4wMJW21DDIOZcMSWUkHuwX9gZV4FPoAOuRA'
+          },
+          body: JSON.stringify({
+            email: email,
+            phone: phone,
+            amount: 250,
+            currency: 'M',
+            status: 'pending_mpesa'
+          })
+        });
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-
-        async function buyNow() {
-            const email = prompt("Enter email for instant PDF delivery:")
-            if(!email) return
-            if(!email.includes('@')) return alert("Enter valid email boss")
-            
-            const phone = prompt("Enter Mpesa number:")
-            if(!phone) return alert("Need Mpesa number for payment
+        if (res.ok) {
+          alert('Order received! We will WhatsApp you Mpesa details for M250. Check your email.');
+          btn.innerHTML = 'Order Received ✅';
+        } else {
+          throw new Error('Failed');
+        }
+      } catch (err) {
+        alert('Error. Please WhatsApp +26657031600 to order directly.');
+        btn.innerHTML = 'Buy Franchise Kit - Mpesa M250';
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
