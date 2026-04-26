@@ -1,67 +1,137 @@
-export default function App() {
+import { Link } from 'react-router-dom'
+
+function App() {
   return (
-    <main className="min-h-screen bg-black text-amber-50 font-sans">
-      <div className="container mx-auto px-4 py-8 md:py-16">
-        
-        <nav className="flex justify-between items-center mb-12">
-          <div className="text-2xl font-black text-amber-400">Fortune Brownies ©2026</div>
-          <a 
-            href="/login" 
-            className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-amber-500/30"
-          >
-            Login
-          </a>
-        </nav>
-
-        <section className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300 leading-tight">
-            We don't sell brownies.<br/>We sell freedom.
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-amber-200 font-semibold max-w-3xl mx-auto">
-            Lesotho's first automated micro-franchise for women. One tray at a time.
-          </p>
-          <div className="bg-zinc-900/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl border border-amber-500/30">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-amber-400">
-              M250 Founding Member
-            </h2>
-            <p className="text-lg mb-2 text-amber-100">0% monthly fees. Forever.</p>
-            <p className="text-lg mb-6 text-amber-100">M50 per referral. Auto-paid to Ecocash/Mpesa.</p>
-            <a 
-              href="https://wa.me/26657031600?text=FORT%20KNOX%20M250" 
-              target="_blank"
-              className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-black py-4 px-8 rounded-xl text-xl inline-block transition-all shadow-lg shadow-amber-500/40 w-full md:w-auto"
-            >
-              Join WhatsApp → M250
-            </a>
-            <p className="text-sm mt-4 text-amber-300/70">Standard price M500 after July 25, 2026</p>
-          </div>
-        </section>
-
-        <section className="grid md:grid-cols-3 gap-6 mb-16">
-          <div className="bg-zinc-900/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg border border-amber-500/20">
-            <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-400 to-yellow-500 mb-2">1</div>
-            <div className="text-amber-300 font-semibold text-lg">Founder</div>
-            <div className="text-sm text-amber-200/70 mt-1">You tested it 🤍</div>
-          </div>
-          <div className="bg-zinc-900/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg border border-amber-500/20">
-            <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-400 to-yellow-500 mb-2">3</div>
-            <div className="text-amber-300 font-semibold text-lg">Systems</div>
-            <div className="text-sm text-amber-200/70 mt-1">Supabase + Vercel + WhatsApp</div>
-          </div>
-          <div className="bg-zinc-900/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg border border-amber-500/20">
-            <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-400 to-yellow-500 mb-2">150+</div>
-            <div className="text-amber-300 font-semibold text-lg">Countries</div>
-            <div className="text-sm text-amber-200/70 mt-1">Paystack enabled</div>
-          </div>
-        </section>
-
-        <footer className="text-center text-amber-200/60">
-          <p className="font-semibold text-lg text-amber-300">CEO Direct WhatsApp: +266 570 31600</p>
-          <p className="text-sm mt-2">Founded: January 2026 | Dev: April 18, 2026 | Launch: April 25, 2026</p>
-          <p className="text-xs mt-4">© 2026 Fortune Brownies. From Khubetsoana to the world 🇱🇸</p>
-        </footer>
-
+    <div style={{
+      backgroundColor: '#000000',
+      color: '#FFD700',
+      minHeight: '100vh',
+      padding: '1rem',
+      fontFamily: 'Arial'
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '2rem',
+        padding: '0.5rem 0'
+      }}>
+        <h3 style={{ fontSize: '1.2rem' }}>Fortune Brownies ©2026</h3>
+        <Link to="/login" style={{
+          backgroundColor: '#FFD700',
+          color: '#000000',
+          padding: '10px 20px',
+          textDecoration: 'none',
+          borderRadius: '8px',
+          fontWeight: 'bold',
+          fontSize: '1rem'
+        }}>
+          Login
+        </Link>
       </div>
-    </main>
+
+      {/* Hero */}
+      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <h1 style={{ 
+          fontSize: '2.5rem', 
+          marginBottom: '1rem',
+          lineHeight: '1.1'
+        }}>
+          We don't sell brownies.<br/>We sell freedom.
+        </h1>
+        <p style={{ 
+          fontSize: '1.2rem', 
+          marginBottom: '2rem',
+          padding: '0 0.5rem'
+        }}>
+          Lesotho's first automated micro-franchise for women. One tray at a time.
+        </p>
+
+        {/* Main Card */}
+        <div style={{
+          backgroundColor: '#1a1a1a',
+          border: '2px solid #FFD700',
+          borderRadius: '16px',
+          padding: '1.5rem',
+          margin: '0 auto 2rem auto',
+          maxWidth: '400px'
+        }}>
+          <h2 style={{ 
+            fontSize: '1.6rem', 
+            marginBottom: '1rem',
+            color: '#FFD700' 
+          }}>
+            M250 Founding Member
+          </h2>
+          <p style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>
+            0% monthly fees. Forever.
+          </p>
+          <p style={{ marginBottom: '1.5rem', fontSize: '1.1rem' }}>
+            M50 per referral. Auto-paid to Ecocash/Mpesa.
+          </p>
+          <a href="https://wa.me/26657031600" style={{
+            display: 'block',
+            backgroundColor: '#FFD700',
+            color: '#000000',
+            padding: '16px',
+            textDecoration: 'none',
+            borderRadius: '12px',
+            fontWeight: 'bold',
+            fontSize: '1.2rem',
+            marginBottom: '1rem'
+          }}>
+            Join WhatsApp — M250
+          </a>
+          <p style={{ fontSize: '0.9rem', opacity: '0.8' }}>
+            Standard price M500 after July 25, 2026
+          </p>
+        </div>
+
+        {/* Stats Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: '1rem',
+          marginBottom: '2rem',
+          maxWidth: '400px',
+          margin: '0 auto 2rem auto'
+        }}>
+          {[
+            {num: '1', label: 'Founder', sub: 'You tested it 🤍'},
+            {num: '3', label: 'Systems', sub: 'Supabase + Vercel + WhatsApp'},
+            {num: '150+', label: 'Countries', sub: 'Paystack enabled'}
+          ].map((stat, i) => (
+            <div key={i} style={{
+              backgroundColor: '#1a1a1a',
+              padding: '1rem 0.5rem',
+              borderRadius: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#FFD700' }}>
+                {stat.num}
+              </div>
+              <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>{stat.label}</div>
+              <div style={{ fontSize: '0.8rem', opacity: '0.8' }}>{stat.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div style={{ textAlign: 'center', fontSize: '1rem' }}>
+          <p style={{ color: '#FFD700', marginBottom: '0.5rem' }}>
+            <strong>CEO Direct WhatsApp: +266 570 31600</strong>
+          </p>
+          <p style={{ fontSize: '0.9rem', opacity: '0.7', marginBottom: '0.5rem' }}>
+            Founded: January 2026 | Dev: April 18, 2026 | Launch: April 25, 2026
+          </p>
+          <p style={{ fontSize: '0.9rem', opacity: '0.7' }}>
+            © 2026 Fortune Brownies. From Khubetsoana to the world 🧡🍫♾️
+          </p>
+        </div>
+      </div>
+    </div>
   )
-      }
+}
+
+export default App
