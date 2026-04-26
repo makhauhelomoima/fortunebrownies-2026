@@ -7,10 +7,10 @@ export default function App() {
         <nav className="flex justify-between items-center mb-12">
           <div className="text-2xl font-black text-amber-400">Fortune Brownies ©2026</div>
           <a 
-            href="#join" 
+            href="https://wa.me/26657031600?text=LOGIN%20FORT%20KNOX" 
             className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-amber-500/30"
           >
-            Join M250
+            Login
           </a>
         </nav>
 
@@ -79,7 +79,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* FOOTER - UPDATED PER YOUR REQUEST */}
+        {/* FOOTER */}
         <footer className="text-center text-amber-200/60">
           <p className="font-semibold text-lg text-amber-300">CEO Direct WhatsApp: +266 570 31600</p>
           <p className="text-sm mt-2">Founded: January 2026 | Dev: April 18, 2026 | Launch: April 25, 2026</p>
@@ -89,4 +89,4 @@ export default function App() {
       </div>
     </main>
   )
-            }
+        }
