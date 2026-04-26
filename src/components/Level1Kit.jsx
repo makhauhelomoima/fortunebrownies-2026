@@ -252,4 +252,43 @@ export default function Level1Kit() {
                 <div className="bg-black p-4 rounded-lg border border-yellow-600">
                   <p className="font-black text-yellow-500 mb-1">2. MPESA</p>
                   <p className="text-2xl font-mono font-bold text-white">+266 5703 1600</p>
-                  <p class
+                  <p className="text-sm text-gray-400">Name: Makhauhelo Moima</p>
+                </div>
+                
+                <div className="bg-black p-4 rounded-lg border border-yellow-600">
+                  <p className="font-black text-yellow-500 mb-1">3. BANK TRANSFER</p>
+                  <p className="text-sm text-gray-300">Lesotho Post Bank</p>
+                  <p className="text-xl font-mono font-bold text-white">1036202900018</p>
+                  <p className="text-sm text-gray-400">Name: Makhauhelo Moima</p>
+                  <p className="text-xs text-gray-500">Ref: Your WhatsApp Number</p>
+                </div>
+              </div>
+
+              <div className="bg-yellow-900 border-l-4 border-yellow-500 p-4 rounded">
+                <p className="font-black text-yellow-300 mb-2">Step 3: WhatsApp Proof</p>
+                <p className="text-sm text-yellow-200">
+                  Send proof of payment + your email to <strong>+266 5703 1600</strong>
+                </p>
+                <p className="text-xs text-yellow-400 mt-2">
+                  Get approved + instant access to Fort Knox in 10 mins. No PayPal. No waiting.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* FOOTER */}
+        <div className="flex gap-2 mt-8 justify-center">
+          <button className="bg-gray-800 text-gray-400 px-4 py-2 rounded-lg text-xs">HQ Login</button>
+          <button className="bg-gray-800 text-gray-400 px-4 py-2 rounded-lg text-xs">Fortune University</button>
+          <a href="https://wa.me/26657031600" className="bg-gray-800 text-gray-400 px-4 py-2 rounded-lg text-xs">WhatsApp Me</a>
+        </div>
+
+        <div className="text-center mt-8 text-xs text-gray-600">
+          © 2026 Fortune Brownies | Level 1 Kitchen Hustler | Khubetsoana, Maseru LS
+        </div>
+
+      </div>
+    </div>
+  );
+                                            }
