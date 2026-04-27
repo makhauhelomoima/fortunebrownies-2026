@@ -46,4 +46,4 @@ export const getCurrentUser = async () => {
 // FORT KNOX: Sign out
 export const signOut = async () => {
   await supabase.auth.signOut()
-    }
+}
