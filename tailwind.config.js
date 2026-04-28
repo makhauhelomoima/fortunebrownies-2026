@@ -1,10 +1,10 @@
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background: #000;
+  color: #FBBF24;
+  font-family: system-ui, -apple-system, sans-serif;
 }
