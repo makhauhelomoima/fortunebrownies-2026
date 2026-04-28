@@ -5,7 +5,8 @@ import { supabase } from './supabaseClient'
 const ACADEMY_PDF_URL = 'https://lsljnbljovnaclinwxva.supabase.co/storage/v1/object/public/fort-knox-files/Academy/Fort_Knox_Academy_Founding_Recipe.pdf.pdf';
 const ACADEMY_PRICE = 250;
 const VERCEL_URL = 'https://fortune-brownies-2026.vercel.app';
-const ADMIN_EMAIL = 'makhauhelomoima@gmail.com'; // Your email fixed
+const ADMIN_EMAIL = 'makhauhelomoima@gmail.com';
+const WHATSAPP_NUMBER = '+266XXXXXXXX'; // REPLACE WITH YOUR NUMBER
 // ============================================
 
 export default function App() {
@@ -16,7 +17,8 @@ export default function App() {
   const [isPaidAcademy, setIsPaidAcademy] = useState(false)
   const [purchasedItems, setPurchasedItems] = useState([])
   const [loading, setLoading] = useState(false)
-  const [view, setView] = useState('home')
+  const [view, setView] = useState('landing') // NEW: Start on landing
+  const [showAuth, setShowAuth] = useState(false)
   
   // Admin stats
   const [totalRevenue, setTotalRevenue] = useState(0)
@@ -32,6 +34,7 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
+        setView('home')
         checkAcademyPayment(session.user.id)
         checkGiftShopPurchases(session.user.id)
         if (session.user.email === ADMIN_EMAIL) fetchAdminStats()
@@ -41,10 +44,12 @@ export default function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
+        setView('home')
         checkAcademyPayment(session.user.id)
         checkGiftShopPurchases(session.user.id)
         if (session.user.email === ADMIN_EMAIL) fetchAdminStats()
       } else {
+        setView('landing')
         setIsPaidAcademy(false)
         setPurchasedItems([])
         resetAdminStats()
@@ -115,12 +120,15 @@ export default function App() {
     await supabase.auth.signOut()
     setIsPaidAcademy(false)
     setPurchasedItems([])
-    setView('home')
+    setView('landing')
+    setShowAuth(false)
   }
 
-  // ACADEMY: Pay M250 once = Lifetime free downloads
   async function handleAcademyPayment() {
-    if (!user) return alert('Sign in first, Queen')
+    if (!user) {
+      setShowAuth(true)
+      return alert('Create account first, Queen')
+    }
     setLoading(true)
     
     const { error } = await supabase.from('payments').insert([{ 
@@ -142,12 +150,14 @@ export default function App() {
     setLoading(false)
     
     window.open(ACADEMY_PDF_URL, '_blank')
-    alert('Welcome to Fort Knox Academy! 🖤💛 Founding Recipe downloading. All future Academy guides are FREE.')
+    alert('Welcome to Fort Knox Academy! 🖤💛 Founding Recipe downloading.')
   }
 
-  // GIFT SHOP: Pay per item. Red Velvet M200. Maximum 🔐
   async function buyGiftShopItem(item) {
-    if (!user) return alert('Sign in first, Queen')
+    if (!user) {
+      setShowAuth(true)
+      return alert('Create account first, Queen')
+    }
     
     if (purchasedItems.includes(item.id)) {
       window.open(item.pdf_url, '_blank')
@@ -190,20 +200,37 @@ export default function App() {
       textAlign: 'center',
       borderBottom: '3px solid #FFD700',
       paddingBottom: '25px',
-      marginBottom: '30px'
+      marginBottom: '30px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
     },
     logo: {
-      fontSize: '44px',
+      fontSize: '24px',
       fontWeight: '900',
-      letterSpacing: '3px',
-      margin: '0 0 15px 0',
+      letterSpacing: '1px',
+      margin: 0,
       textShadow: '0 0 15px rgba(255,215,0,0.6)'
     },
     tagline: {
       fontSize: '20px',
       color: '#FFA500',
-      margin: 0,
+      margin: '10px 0 0 0',
       fontWeight: '600'
+    },
+    heroTitle: {
+      fontSize: '44px',
+      fontWeight: '900',
+      textAlign: 'center',
+      margin: '40px 0 20px 0',
+      lineHeight: '1.2'
+    },
+    heroSubtitle: {
+      fontSize: '20px',
+      color: '#FFA500',
+      textAlign: 'center',
+      margin: '0 0 40px 0',
+      lineHeight: '1.6'
     },
     card: {
       background: '#111',
@@ -241,6 +268,16 @@ export default function App() {
       border: '2px solid #FFD700',
       color: '#FFD700'
     },
+    loginBtn: {
+      padding: '12px 24px',
+      background: '#FFD700',
+      border: 'none',
+      borderRadius: '8px',
+      color: '#000',
+      fontSize: '18px',
+      fontWeight: '800',
+      cursor: 'pointer'
+    },
     price: {
       fontSize: '52px',
       fontWeight: '900',
@@ -248,6 +285,12 @@ export default function App() {
       textAlign: 'center',
       margin: '15px 0',
       textShadow: '0 0 15px rgba(255,215,0,0.4)'
+    },
+    priceSub: {
+      fontSize: '18px',
+      color: '#FFA500',
+      textAlign: 'center',
+      margin: '0 0 20px 0'
     },
     statNumber: {
       fontSize: '48px',
@@ -321,33 +364,101 @@ export default function App() {
       fontSize: '16px',
       fontWeight: '900',
       marginBottom: '15px'
+    },
+    paymentBtn: {
+      width: '100%',
+      padding: '18px',
+      background: '#FFD700',
+      border: 'none',
+      borderRadius: '10px',
+      color: '#000',
+      fontSize: '20px',
+      fontWeight: '800',
+      cursor: 'pointer',
+      marginBottom: '12px'
+    },
+    footer: {
+      textAlign: 'center',
+      color: '#666',
+      fontSize: '14px',
+      marginTop: '40px',
+      paddingTop: '20px',
+      borderTop: '1px solid #333'
     }
   }
 
-  if (!user) {
+  // ===== LANDING PAGE - MATCHES YOUR SCREENSHOT =====
+  if (!user && view === 'landing') {
     return (
       <div style={styles.app}>
         <div style={styles.header}>
-          <h1 style={styles.logo}>FORT KNOX 🍫</h1>
-          <p style={styles.tagline}>Turn Your Kitchen Into a Bank</p>
+          <h1 style={styles.logo}>Fortune Brownies ©2026</h1>
+          <button style={styles.loginBtn} onClick={() => setShowAuth(true)}>Login</button>
         </div>
-        <div style={styles.card}>
-          <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '32px'}}>Member Access</h2>
-          <input style={styles.input} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input style={styles.input} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button style={styles.button} onClick={signIn} disabled={loading}>{loading ? 'Loading...' : 'Sign In'}</button>
-          <button style={{...styles.button, ...styles.buttonSecondary}} onClick={signUp} disabled={loading}>Create Account</button>
-        </div>
+
+        {!showAuth ? (
+          <>
+            <h1 style={styles.heroTitle}>We don't sell<br/>brownies.<br/>We sell freedom.</h1>
+            <p style={styles.heroSubtitle}>
+              Lesotho's first automated micro-franchise<br/>for women.<br/>One tray at a time.
+            </p>
+
+            <div style={styles.card}>
+              <h2 style={{...styles.price, fontSize: '36px', margin: '0 0 10px 0'}}>M250 Founding Member</h2>
+              <p style={styles.priceSub}>
+                ≈ $14.40 USD<br/>
+                0% monthly fees. Forever.<br/><br/>
+                M50 per referral. Auto-paid to Ecocash/Mpesa.
+              </p>
+              
+              <p style={{...styles.priceSub, fontWeight: '800', fontSize: '20px', color: '#FFD700'}}>
+                Get Access - Choose Payment:
+              </p>
+
+              <button style={styles.paymentBtn} onClick={() => {setShowAuth(true); alert('Create account, then send M250 via Ecocash to MAKHAUHELO MOIMA. Use email as reference.')}}>
+                1. Ecocash - *199#
+              </button>
+              <button style={styles.paymentBtn} onClick={() => {setShowAuth(true); alert('Create account, then send M250 via Mpesa to MAKHAUHELO MOIMA. Use email as reference.')}}>
+                2. Mpesa - *200#
+              </button>
+              <button style={styles.paymentBtn} onClick={() => {setShowAuth(true); alert('Create account, then send M250 via Lesotho Post Bank to MAKHAUHELO MOIMA. Use email as reference.')}}>
+                3. Post Bank - *120*223# / EFT
+              </button>
+
+              <p style={{...styles.priceSub, fontSize: '14px', marginTop: '20px'}}>
+                Price goes back to M500.00 ≈ $28.80 USD on July 25th
+              </p>
+            </div>
+
+            <div style={styles.footer}>
+              Fortune Brownies ©2026 | Fort Knox Academy<br/>
+              CEO: Makhauhelo Moima
+            </div>
+          </>
+        ) : (
+          <div style={styles.card}>
+            <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '32px'}}>Fortune Brownies ©2026<br/>Fort Knox Academy</h2>
+            <p style={{textAlign: 'center', color: '#FFA500', marginBottom: '25px'}}>Member Access</p>
+            <input style={styles.input} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input style={styles.input} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <button style={styles.button} onClick={signIn} disabled={loading}>{loading ? 'Loading...' : 'Sign In'}</button>
+            <button style={{...styles.button, ...styles.buttonSecondary}} onClick={signUp} disabled={loading}>Create Account</button>
+            <button style={{...styles.button, ...styles.buttonSecondary, marginTop: '10px'}} onClick={() => setShowAuth(false)}>← Back to Home</button>
+          </div>
+        )}
       </div>
     )
   }
 
+  // ===== LOGGED IN APP =====
   return (
     <div style={styles.app}>
       <div style={styles.header}>
-        <h1 style={styles.logo}>FORT KNOX 🍫</h1>
-        <p style={styles.tagline}>{isAdmin ? 'CEO Dashboard' : `Welcome, ${user.email}`}</p>
-        <button style={{...styles.button, ...styles.buttonSecondary, marginTop: '15px', padding: '14px', fontSize: '18px'}} onClick={signOut}>Sign Out</button>
+        <div>
+          <h1 style={styles.logo}>Fortune Brownies ©2026</h1>
+          <p style={{...styles.tagline, fontSize: '16px', margin: 0}}>Fort Knox Academy</p>
+        </div>
+        <button style={{...styles.loginBtn, background: '#000', border: '2px solid #FFD700', color: '#FFD700'}} onClick={signOut}>Sign Out</button>
       </div>
 
       <div style={styles.nav}>
@@ -381,8 +492,7 @@ export default function App() {
           <p style={{textAlign: 'center', color: '#FFA500', marginBottom: '25px', lineHeight: '1.8', fontSize: '20px'}}>
             Pay Once → Lifetime Access<br/>
             Master Recipe + All Future Guides FREE<br/>
-            Cost M100 → Sell M180 → Profit M80 per tray<br/>
-            <strong style={{fontSize: '24px'}}>Bake 5 trays/week = M1,600/month</strong>
+            Learn cost control for any economy
           </p>
           {isPaidAcademy ? (
             <>
@@ -395,9 +505,16 @@ export default function App() {
               </p>
             </>
           ) : (
-            <button style={styles.button} onClick={handleAcademyPayment} disabled={loading}>
-              {loading ? 'Processing...' : `Join Academy - M${ACADEMY_PRICE}`}
-            </button>
+            <>
+              <button style={styles.button} onClick={handleAcademyPayment} disabled={loading}>
+                {loading ? 'Processing...' : `Join Academy - M${ACADEMY_PRICE}`}
+              </button>
+              <p style={{textAlign: 'center', color: '#FFA500', fontSize: '16px', marginTop: '15px'}}>
+                Pay via M-Pesa, EcoCash, or Lesotho Post Bank to:<br/>
+                <strong>MAKHAUHELO MOIMA</strong><br/>
+                Use your email as reference
+              </p>
+            </>
           )}
         </div>
       )}
@@ -433,9 +550,15 @@ export default function App() {
                         </button>
                       </>
                     ) : (
-                      <button style={styles.button} onClick={() => buyGiftShopItem(item)} disabled={loading}>
-                        {loading ? 'Processing...' : `Buy Now - M${item.price_maluti}`}
-                      </button>
+                      <>
+                        <button style={styles.button} onClick={() => buyGiftShopItem(item)} disabled={loading}>
+                          {loading ? 'Processing...' : `Buy Now - M${item.price_maluti}`}
+                        </button>
+                        <p style={{textAlign: 'center', color: '#FFA500', fontSize: '14px', marginTop: '10px'}}>
+                          Pay via M-Pesa, EcoCash, or Post Bank to:<br/>
+                          <strong>MAKHAUHELO MOIMA</strong>
+                        </p>
+                      </>
                     )}
                   </div>
                 )
@@ -531,6 +654,11 @@ export default function App() {
           </div>
         </div>
       )}
+
+      <div style={styles.footer}>
+        Fortune Brownies ©2026 | Fort Knox Academy<br/>
+        CEO: Makhauhelo Moima
+      </div>
     </div>
   )
 }
