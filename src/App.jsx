@@ -17,7 +17,7 @@ export default function App() {
   const [isPaidAcademy, setIsPaidAcademy] = useState(false)
   const [purchasedItems, setPurchasedItems] = useState([])
   const [loading, setLoading] = useState(false)
-  const [view, setView] = useState('landing') // NEW: Start on landing
+  const [view, setView] = useState('landing')
   const [showAuth, setShowAuth] = useState(false)
   
   // Admin stats
@@ -193,6 +193,7 @@ export default function App() {
       color: '#FFD700',
       fontFamily: 'system-ui, -apple-system, sans-serif',
       padding: '20px',
+      paddingBottom: '40px',
       maxWidth: '700px',
       margin: '0 auto'
     },
@@ -222,7 +223,7 @@ export default function App() {
       fontSize: '44px',
       fontWeight: '900',
       textAlign: 'center',
-      margin: '40px 0 20px 0',
+      margin: '80px 0 20px 0',
       lineHeight: '1.2'
     },
     heroSubtitle: {
@@ -379,15 +380,18 @@ export default function App() {
     },
     footer: {
       textAlign: 'center',
-      color: '#666',
-      fontSize: '14px',
-      marginTop: '40px',
-      paddingTop: '20px',
-      borderTop: '1px solid #333'
+      color: '#FFD700',
+      fontSize: '18px',
+      fontWeight: '700',
+      marginTop: '60px',
+      paddingTop: '30px',
+      paddingBottom: '30px',
+      borderTop: '2px solid #FFD700',
+      lineHeight: '1.6'
     }
   }
 
-  // ===== LANDING PAGE - MATCHES YOUR SCREENSHOT =====
+  // ===== LANDING PAGE - FORTUNE BROWNIES ©2026 =====
   if (!user && view === 'landing') {
     return (
       <div style={styles.app}>
@@ -431,8 +435,9 @@ export default function App() {
             </div>
 
             <div style={styles.footer}>
-              Fortune Brownies ©2026 | Fort Knox Academy<br/>
-              CEO: Makhauhelo Moima
+              <div style={{fontSize: '20px', marginBottom: '8px'}}>Fortune Brownies ©2026</div>
+              <div style={{fontSize: '18px', color: '#FFA500'}}>Fort Knox Academy</div>
+              <div style={{fontSize: '16px', marginTop: '12px'}}>CEO: Makhauhelo Moima</div>
             </div>
           </>
         ) : (
@@ -656,8 +661,9 @@ export default function App() {
       )}
 
       <div style={styles.footer}>
-        Fortune Brownies ©2026 | Fort Knox Academy<br/>
-        CEO: Makhauhelo Moima
+        <div style={{fontSize: '20px', marginBottom: '8px'}}>Fortune Brownies ©2026</div>
+        <div style={{fontSize: '18px', color: '#FFA500'}}>Fort Knox Academy</div>
+        <div style={{fontSize: '16px', marginTop: '12px'}}>CEO: Makhauhelo Moima</div>
       </div>
     </div>
   )
