@@ -4,28 +4,35 @@ import { supabase } from './supabaseClient'
 function App() {
   const [session, setSession] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [memberData, setMemberData] = useState(null)
+  const [giftShop, setGiftShop] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // FORT KNOX SESSION + ROLE LISTENER
   useEffect(() => {
-    // Check current session on page load
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setIsAdmin(session?.user?.email === 'makhauhelomoima@gmail.com')
+      if (session) fetchMemberData(session.user.email)
       setLoading(false)
     })
 
-    // Listen for login/logout changes - THIS FIXES MAGIC LINK
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setIsAdmin(session?.user?.email === 'makhauhelomoima@gmail.com')
-      setLoading(false)
+      if (session) fetchMemberData(session.user.email)
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  // LOGIN FUNCTION
+  const fetchMemberData = async (email) => {
+    const { data: member } = await supabase.from('founding_members').select('*').eq('email', email).single()
+    setMemberData(member)
+    
+    const { data: items } = await supabase.from('gift_shop').select('*').eq('active', true)
+    setGiftShop(items || [])
+  }
+
   const handleLogin = async () => {
     const email = prompt('Enter your email for magic link')
     if (email) {
@@ -35,80 +42,85 @@ function App() {
     }
   }
 
-  // LOGOUT FUNCTION
   const handleLogout = async () => {
     await supabase.auth.signOut()
   }
 
+  const copyReferralLink = () => {
+    const link = `https://fortunebrownies.vercel.app?ref=${memberData?.referral_code}`
+    navigator.clipboard.writeText(link)
+    alert('Referral link copied! Share and earn M50 per signup 🍫')
+  }
+
   if (loading) {
-    return (
-      <div style={{ background: '#000', color: '#FFD700', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <h1>Loading Fort Knox... 🖤💛</h1>
-      </div>
-    )
+    return <div style={{ background: '#000', color: '#FFD700', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><h1>Loading Fort Knox... 🖤💛</h1></div>
   }
 
   return (
     <div style={{ background: '#000', color: '#FFD700', minHeight: '100vh', padding: '20px', fontFamily: 'Arial' }}>
       {!session ? (
-        // PUBLIC VIEW - NOT LOGGED IN
+        // PUBLIC VIEW
         <div style={{ textAlign: 'center', paddingTop: '50px' }}>
           <h1 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Fortune Brownies 🍫</h1>
           <p style={{ fontSize: '1.2rem', marginBottom: '30px' }}>M250 Founding Member Program</p>
-          <button 
-            onClick={handleLogin}
-            style={{ 
-              background: '#FFD700', 
-              color: '#000', 
-              border: 'none', 
-              padding: '15px 30px', 
-              fontSize: '1.1rem', 
-              fontWeight: 'bold',
-              borderRadius: '8px',
-              cursor: 'pointer'
-            }}
-          >
-            Login / Join
-          </button>
+          <button onClick={handleLogin} style={{ background: '#FFD700', color: '#000', border: 'none', padding: '15px 30px', fontSize: '1.1rem', fontWeight: 'bold', borderRadius: '8px', cursor: 'pointer' }}>Login / Join</button>
         </div>
       ) : isAdmin ? (
-        // HQ DASHBOARD - ONLY MAKHAUHELO SEES THIS
+        // HQ DASHBOARD
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #FFD700', paddingBottom: '20px', marginBottom: '30px' }}>
             <h1>Fort Knox HQ 👑</h1>
-            <button 
-              onClick={handleLogout}
-              style={{ background: '#FFD700', color: '#000', border: 'none', padding: '10px 20px', fontWeight: 'bold', borderRadius: '5px', cursor: 'pointer' }}
-            >
-              Logout
-            </button>
+            <button onClick={handleLogout} style={{ background: '#FFD700', color: '#000', border: 'none', padding: '10px 20px', fontWeight: 'bold', borderRadius: '5px', cursor: 'pointer' }}>Logout</button>
           </div>
           <h2>Welcome, CEO Makhauhelo</h2>
-          <p>Logged in as: {session.user.email}</p>
-          <div style={{ background: '#111', padding: '20px', borderRadius: '8px', marginTop: '20px' }}>
-            <h3>Quick Stats</h3>
-            <p>Members: Coming soon...</p>
-            <p>Revenue: Coming soon...</p>
-          </div>
+          <p>Your referral code: <strong>{memberData?.referral_code}</strong></p>
+          <p>Total referrals: <strong>{memberData?.referral_count || 0}</strong> | Earnings: <strong>M{memberData?.referral_earnings || 0}</strong></p>
         </div>
       ) : (
-        // MEMBER DASHBOARD - NEW USERS SEE THIS
+        // MEMBER DASHBOARD
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #FFD700', paddingBottom: '20px', marginBottom: '30px' }}>
-            <h1>Welcome to Fortune Brownies 🍫</h1>
-            <button 
-              onClick={handleLogout}
-              style={{ background: '#FFD700', color: '#000', border: 'none', padding: '10px 20px', fontWeight: 'bold', borderRadius: '5px', cursor: 'pointer' }}
-            >
-              Logout
-            </button>
+            <h1>Fortune Brownies 🍫</h1>
+            <button onClick={handleLogout} style={{ background: '#FFD700', color: '#000', border: 'none', padding: '10px 20px', fontWeight: 'bold', borderRadius: '5px', cursor: 'pointer' }}>Logout</button>
           </div>
+          
           <h2>Founding Member Portal</h2>
           <p>Logged in as: {session.user.email}</p>
-          <div style={{ background: '#111', padding: '20px', borderRadius: '8px', marginTop: '20px' }}>
-            <h3>Your Status</h3>
-            <p>Membership: Founding Member ♾️</p>
-            <p>Payment: Complete your M250 payment via USSD</p>
+          
+          {/* FORT KNOX ACADEMY */}
+          <div style={{ background: '#111', padding: '20px', borderRadius: '8px', marginTop: '20px', border: '1px solid #FFD700' }}>
+            <h3>🎓 Fort Knox Academy</h3>
+            {memberData?.paid ? (
+              <>
+                <p style={{ color: '#4ADE80', marginBottom: '15px' }}>Status: Paid Member ♾️</p>
+                <a href="https://YOUR-PROJECT.supabase.co/storage/v1/object/public/fort-knox-files/academy-founding-recipe.pdf" target="_blank" style={{ background: '#FFD700', color: '#000', padding: '12px 24px', textDecoration: 'none', fontWeight: 'bold', borderRadius: '8px', display: 'inline-block' }}>Download Founding Recipe PDF 🍫</a>
+              </>
+            ) : (
+              <>
+                <p style={{ color: '#FF6B6B', marginBottom: '15px' }}>Status: Payment Pending</p>
+                <p>Complete M250 via Ecocash to 5072 1444 to unlock</p>
+              </>
+            )}
+          </div>
+
+          {/* REFERRAL ENGINE */}
+          <div style={{ background: '#111', padding: '20px', borderRadius: '8px', marginTop: '20px', border: '1px solid #FFD700' }}>
+            <h3>💰 Referral Earnings</h3>
+            <p>Your Code: <strong>{memberData?.referral_code || 'Loading...'}</strong></p>
+            <p>Referrals: <strong>{memberData?.referral_count || 0}</strong> | Earned: <strong>M{memberData?.referral_earnings || 0}</strong></p>
+            <button onClick={copyReferralLink} style={{ background: '#FFD700', color: '#000', border: 'none', padding: '10px 20px', fontWeight: 'bold', borderRadius: '5px', cursor: 'pointer', marginTop: '10px' }}>Copy Referral Link</button>
+          </div>
+
+          {/* GIFT SHOP */}
+          <div style={{ background: '#111', padding: '20px', borderRadius: '8px', marginTop: '20px', border: '1px solid #FFD700' }}>
+            <h3>🛍️ Gift Shop</h3>
+            {giftShop.map(item => (
+              <div key={item.id} style={{ borderTop: '1px solid #333', paddingTop: '15px', marginTop: '15px' }}>
+                <p><strong>{item.item_name}</strong> - M{item.price_maluti}</p>
+                <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>{item.description}</p>
+                <button onClick={() => alert(`To purchase ${item.item_name}: Pay M${item.price_maluti} via Ecocash to 5072 1444. WhatsApp proof to +266 5178 8890`)} style={{ background: '#FFD700', color: '#000', border: 'none', padding: '8px 16px', fontWeight: 'bold', borderRadius: '5px', cursor: 'pointer', marginTop: '8px' }}>Buy Now</button>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -116,4 +128,4 @@ function App() {
   )
 }
 
-export default App  // <-- THIS LINE FIXES YOUR BUILD ERROR
+export default App
