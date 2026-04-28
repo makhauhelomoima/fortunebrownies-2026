@@ -19,6 +19,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [view, setView] = useState('landing')
   const [showAuth, setShowAuth] = useState(false)
+  const [authMode, setAuthMode] = useState('member') // NEW: member or admin
   
   // Admin stats
   const [totalRevenue, setTotalRevenue] = useState(0)
@@ -34,20 +35,30 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        setView('home')
+        // CEO GOES STRAIGHT TO ADMIN DASHBOARD
+        if (session.user.email === ADMIN_EMAIL) {
+          setView('admin')
+          fetchAdminStats()
+        } else {
+          setView('home')
+        }
         checkAcademyPayment(session.user.id)
         checkGiftShopPurchases(session.user.id)
-        if (session.user.email === ADMIN_EMAIL) fetchAdminStats()
       }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        setView('home')
+        // CEO AUTO-REDIRECT TO ADMIN
+        if (session.user.email === ADMIN_EMAIL) {
+          setView('admin')
+          fetchAdminStats()
+        } else {
+          setView('home')
+        }
         checkAcademyPayment(session.user.id)
         checkGiftShopPurchases(session.user.id)
-        if (session.user.email === ADMIN_EMAIL) fetchAdminStats()
       } else {
         setView('landing')
         setIsPaidAcademy(false)
@@ -105,14 +116,20 @@ export default function App() {
     setLoading(true)
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: VERCEL_URL } })
     if (error) alert(error.message)
-    else alert('Check your email to confirm signup, Queen!')
+    else alert('Check your email to confirm signup, Queen! Check spam folder too.')
     setLoading(false)
   }
 
   async function signIn() {
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) alert(error.message)
+    if (error) {
+      if (error.message.includes('Invalid login credentials')) {
+        alert('Invalid login: Either password wrong OR email not confirmed. Check your inbox for Supabase confirmation link.')
+      } else {
+        alert(error.message)
+      }
+    }
     setLoading(false)
   }
 
@@ -185,7 +202,6 @@ export default function App() {
     alert(`Thank you! ${item.item_name} purchased for M${item.price_maluti}. Fortune Brownies ©2026 🔐`)
   }
 
-  // ===== BLACK & GOLD STYLES 🖤💛 =====
   const styles = {
     app: {
       minHeight: '100vh',
@@ -212,12 +228,6 @@ export default function App() {
       letterSpacing: '1px',
       margin: 0,
       textShadow: '0 0 15px rgba(255,215,0,0.6)'
-    },
-    tagline: {
-      fontSize: '20px',
-      color: '#FFA500',
-      margin: '10px 0 0 0',
-      fontWeight: '600'
     },
     heroTitle: {
       fontSize: '44px',
@@ -278,6 +288,26 @@ export default function App() {
       fontSize: '18px',
       fontWeight: '800',
       cursor: 'pointer'
+    },
+    authTab: {
+      display: 'flex',
+      gap: '10px',
+      marginBottom: '20px'
+    },
+    authTabBtn: {
+      flex: 1,
+      padding: '14px',
+      background: '#000',
+      border: '2px solid #FFD700',
+      borderRadius: '8px',
+      color: '#FFD700',
+      fontSize: '18px',
+      fontWeight: '700',
+      cursor: 'pointer'
+    },
+    authTabActive: {
+      background: '#FFD700',
+      color: '#000'
     },
     price: {
       fontSize: '52px',
@@ -388,10 +418,18 @@ export default function App() {
       paddingBottom: '30px',
       borderTop: '2px solid #FFD700',
       lineHeight: '1.6'
+    },
+    ceoBadge: {
+      background: '#FF0000',
+      color: '#FFF',
+      padding: '4px 12px',
+      borderRadius: '6px',
+      fontSize: '12px',
+      fontWeight: '900',
+      marginLeft: '10px'
     }
   }
 
-  // ===== LANDING PAGE - FORTUNE BROWNIES ©2026 =====
   if (!user && view === 'landing') {
     return (
       <div style={styles.app}>
@@ -443,11 +481,27 @@ export default function App() {
         ) : (
           <div style={styles.card}>
             <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '32px'}}>Fortune Brownies ©2026<br/>Fort Knox Academy</h2>
-            <p style={{textAlign: 'center', color: '#FFA500', marginBottom: '25px'}}>Member Access</p>
+            
+            <div style={styles.authTab}>
+              <button 
+                style={{...styles.authTabBtn, ...(authMode === 'member' ? styles.authTabActive : {})}} 
+                onClick={() => setAuthMode('member')}>
+                Member Access
+              </button>
+              <button 
+                style={{...styles.authTabBtn, ...(authMode === 'admin' ? styles.authTabActive : {})}} 
+                onClick={() => {setAuthMode('admin'); setEmail(ADMIN_EMAIL);}}>
+                CEO Login <span style={styles.ceoBadge}>🔐</span>
+              </button>
+            </div>
+
+            <p style={{textAlign: 'center', color: '#FFA500', marginBottom: '25px'}}>
+              {authMode === 'admin' ? 'CEO Dashboard Access' : 'Member Access'}
+            </p>
             <input style={styles.input} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <input style={styles.input} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             <button style={styles.button} onClick={signIn} disabled={loading}>{loading ? 'Loading...' : 'Sign In'}</button>
-            <button style={{...styles.button, ...styles.buttonSecondary}} onClick={signUp} disabled={loading}>Create Account</button>
+            {authMode === 'member' && <button style={{...styles.button, ...styles.buttonSecondary}} onClick={signUp} disabled={loading}>Create Account</button>}
             <button style={{...styles.button, ...styles.buttonSecondary, marginTop: '10px'}} onClick={() => setShowAuth(false)}>← Back to Home</button>
           </div>
         )}
@@ -455,12 +509,14 @@ export default function App() {
     )
   }
 
-  // ===== LOGGED IN APP =====
   return (
     <div style={styles.app}>
       <div style={styles.header}>
         <div>
-          <h1 style={styles.logo}>Fortune Brownies ©2026</h1>
+          <h1 style={styles.logo}>
+            Fortune Brownies ©2026
+            {isAdmin && <span style={styles.ceoBadge}>CEO</span>}
+          </h1>
           <p style={{...styles.tagline, fontSize: '16px', margin: 0}}>Fort Knox Academy</p>
         </div>
         <button style={{...styles.loginBtn, background: '#000', border: '2px solid #FFD700', color: '#FFD700'}} onClick={signOut}>Sign Out</button>
@@ -477,16 +533,26 @@ export default function App() {
 
       {view === 'home' && (
         <div style={styles.card}>
-          <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '36px'}}>Your Empire</h2>
+          <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '36px'}}>
+            {isAdmin ? 'CEO Dashboard' : 'Your Empire'}
+          </h2>
           <p style={{textAlign: 'center', color: '#FFA500', fontSize: '22px', fontWeight: '600'}}>
-            {isPaidAcademy ? '👑 Academy Member: Lifetime Access' : 'Start building your baking bank today'}
+            {isAdmin ? '👑 Welcome, CEO Makhauhelo' : isPaidAcademy ? '👑 Academy Member: Lifetime Access' : 'Start building your baking bank today'}
           </p>
-          <button style={styles.button} onClick={() => setView('academy')}>
-            {isPaidAcademy ? 'Access Academy' : `Join Academy - M${ACADEMY_PRICE}`}
-          </button>
-          <button style={{...styles.button, ...styles.buttonSecondary}} onClick={() => setView('giftshop')}>
-            Visit Gift-Shop 🔐 Fortune Brownies ©2026
-          </button>
+          {isAdmin ? (
+            <button style={styles.button} onClick={() => setView('admin')}>
+              View Revenue Dashboard
+            </button>
+          ) : (
+            <>
+              <button style={styles.button} onClick={() => setView('academy')}>
+                {isPaidAcademy ? 'Access Academy' : `Join Academy - M${ACADEMY_PRICE}`}
+              </button>
+              <button style={{...styles.button, ...styles.buttonSecondary}} onClick={() => setView('giftshop')}>
+                Visit Gift-Shop 🔐 Fortune Brownies ©2026
+              </button>
+            </>
+          )}
         </div>
       )}
 
