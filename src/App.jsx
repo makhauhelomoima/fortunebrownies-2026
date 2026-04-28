@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 
-// ===== FORT KNOX CONFIG =====
+// ===== FORT KNOX CONFIG 🖤💛 =====
 const ACADEMY_PDF_URL = 'https://lsljnbljovnaclinwxva.supabase.co/storage/v1/object/public/fort-knox-files/Academy/Fort_Knox_Academy_Founding_Recipe.pdf.pdf';
 const ACADEMY_PRICE = 250;
 const VERCEL_URL = 'https://fortune-brownies-2026.vercel.app';
-const ADMIN_EMAIL = 'makhauhelomolimo@gmail.com';
+const ADMIN_EMAIL = 'makhauhelomoima@gmail.com'; // Your email fixed
 // ============================================
 
 export default function App() {
@@ -13,7 +13,8 @@ export default function App() {
   const [products, setProducts] = useState([])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [isPaid, setIsPaid] = useState(false)
+  const [isPaidAcademy, setIsPaidAcademy] = useState(false)
+  const [purchasedItems, setPurchasedItems] = useState([])
   const [loading, setLoading] = useState(false)
   const [view, setView] = useState('home')
   
@@ -24,7 +25,6 @@ export default function App() {
   const [totalSignups, setTotalSignups] = useState(0)
   const [allUsers, setAllUsers] = useState([])
   const [allPayments, setAllPayments] = useState([])
-  const [referrals, setReferrals] = useState([])
   
   const isAdmin = user?.email === ADMIN_EMAIL
 
@@ -32,7 +32,8 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        checkPayment(session.user.id)
+        checkAcademyPayment(session.user.id)
+        checkGiftShopPurchases(session.user.id)
         if (session.user.email === ADMIN_EMAIL) fetchAdminStats()
       }
     })
@@ -40,10 +41,12 @@ export default function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
       if (session?.user) {
-        checkPayment(session.user.id)
+        checkAcademyPayment(session.user.id)
+        checkGiftShopPurchases(session.user.id)
         if (session.user.email === ADMIN_EMAIL) fetchAdminStats()
       } else {
-        setIsPaid(false)
+        setIsPaidAcademy(false)
+        setPurchasedItems([])
         resetAdminStats()
       }
     })
@@ -57,13 +60,22 @@ export default function App() {
     setProducts(data || [])
   }
 
-  async function checkPayment(userId) {
+  async function checkAcademyPayment(userId) {
     const { data } = await supabase.from('users').select('paid').eq('id', userId).single()
-    setIsPaid(data?.paid || false)
+    setIsPaidAcademy(data?.paid || false)
+  }
+
+  async function checkGiftShopPurchases(userId) {
+    const { data } = await supabase
+      .from('payments')
+      .select('product_id')
+      .eq('user_id', userId)
+      .eq('product_type', 'giftshop')
+      .eq('status', 'completed')
+    setPurchasedItems(data?.map(p => p.product_id) || [])
   }
 
   async function fetchAdminStats() {
-    // All payments with user emails
     const { data: payments } = await supabase.from('payments').select('*, users(email)').order('created_at', { ascending: false })
     if (payments) {
       setAllPayments(payments)
@@ -74,20 +86,14 @@ export default function App() {
       setTotalRevenue(academy + giftshop)
     }
     
-    // All users
     const { data: users } = await supabase.from('users').select('*').order('created_at', { ascending: false })
     setAllUsers(users || [])
     setTotalSignups(users?.length || 0)
-    
-    // Referrals placeholder - add logic later
-    setReferrals([
-      { name: 'No referrals yet', rank: 'Start promoting', amount: 0, status: 'Waiting for first sale' }
-    ])
   }
 
   function resetAdminStats() {
     setTotalRevenue(0); setAcademyRevenue(0); setGiftShopRevenue(0); setTotalSignups(0)
-    setAllUsers([]); setAllPayments([]); setReferrals([])
+    setAllUsers([]); setAllPayments([])
   }
 
   async function signUp() {
@@ -107,10 +113,12 @@ export default function App() {
 
   async function signOut() {
     await supabase.auth.signOut()
-    setIsPaid(false)
+    setIsPaidAcademy(false)
+    setPurchasedItems([])
     setView('home')
   }
 
+  // ACADEMY: Pay M250 once = Lifetime free downloads
   async function handleAcademyPayment() {
     if (!user) return alert('Sign in first, Queen')
     setLoading(true)
@@ -129,16 +137,24 @@ export default function App() {
     }
 
     await supabase.from('users').upsert({ id: user.id, email: user.email, paid: true })
-    setIsPaid(true)
+    setIsPaidAcademy(true)
     if (isAdmin) fetchAdminStats()
     setLoading(false)
     
     window.open(ACADEMY_PDF_URL, '_blank')
-    alert('Welcome to Fort Knox Academy! 🖤💛 Download starting...')
+    alert('Welcome to Fort Knox Academy! 🖤💛 Founding Recipe downloading. All future Academy guides are FREE.')
   }
 
+  // GIFT SHOP: Pay per item. Red Velvet M200. Maximum 🔐
   async function buyGiftShopItem(item) {
     if (!user) return alert('Sign in first, Queen')
+    
+    if (purchasedItems.includes(item.id)) {
+      window.open(item.pdf_url, '_blank')
+      alert(`Re-downloading ${item.item_name}. You own this 🤍🧡`)
+      return
+    }
+    
     setLoading(true)
     
     const { error } = await supabase.from('payments').insert([{ 
@@ -152,12 +168,14 @@ export default function App() {
     setLoading(false)
     if (error) return alert('Payment error: ' + error.message)
     
+    setPurchasedItems([...purchasedItems, item.id])
     if (isAdmin) fetchAdminStats()
+    
     window.open(item.pdf_url, '_blank')
-    alert(`Thank you! ${item.item_name} download starting... 🤍🧡`)
+    alert(`Thank you! ${item.item_name} purchased for M${item.price_maluti}. Fortune Brownies ©2026 🔐`)
   }
 
-  // ===== BIGGER BLACK & GOLD STYLES =====
+  // ===== BLACK & GOLD STYLES 🖤💛 =====
   const styles = {
     app: {
       minHeight: '100vh',
@@ -283,6 +301,26 @@ export default function App() {
       borderBottom: '1px solid #333',
       padding: '16px 12px',
       fontSize: '17px'
+    },
+    lockBadge: {
+      display: 'inline-block',
+      background: '#FF0000',
+      color: '#FFF',
+      padding: '6px 12px',
+      borderRadius: '6px',
+      fontSize: '14px',
+      fontWeight: '800',
+      marginLeft: '10px'
+    },
+    exclusiveBadge: {
+      display: 'inline-block',
+      background: '#FFD700',
+      color: '#000',
+      padding: '8px 16px',
+      borderRadius: '8px',
+      fontSize: '16px',
+      fontWeight: '900',
+      marginBottom: '15px'
     }
   }
 
@@ -315,7 +353,9 @@ export default function App() {
       <div style={styles.nav}>
         <button style={{...styles.navBtn, ...(view === 'home' ? styles.navActive : {})}} onClick={() => setView('home')}>Home</button>
         <button style={{...styles.navBtn, ...(view === 'academy' ? styles.navActive : {})}} onClick={() => setView('academy')}>Academy</button>
-        <button style={{...styles.navBtn, ...(view === 'giftshop' ? styles.navActive : {})}} onClick={() => setView('giftshop')}>Gift Shop</button>
+        <button style={{...styles.navBtn, ...(view === 'giftshop' ? styles.navActive : {})}} onClick={() => setView('giftshop')}>
+          Visit Gift-Shop <span style={styles.lockBadge}>🔐</span>
+        </button>
         {isAdmin && <button style={{...styles.navBtn, ...(view === 'admin' ? styles.navActive : {})}} onClick={() => setView('admin')}>Admin</button>}
       </div>
 
@@ -323,12 +363,14 @@ export default function App() {
         <div style={styles.card}>
           <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '36px'}}>Your Empire</h2>
           <p style={{textAlign: 'center', color: '#FFA500', fontSize: '22px', fontWeight: '600'}}>
-            {isPaid ? '👑 Academy Member: Full Access Unlocked' : 'Start building your baking bank today'}
+            {isPaidAcademy ? '👑 Academy Member: Lifetime Access' : 'Start building your baking bank today'}
           </p>
           <button style={styles.button} onClick={() => setView('academy')}>
-            {isPaid ? 'Access Academy' : `Join Academy - M${ACADEMY_PRICE}`}
+            {isPaidAcademy ? 'Access Academy' : `Join Academy - M${ACADEMY_PRICE}`}
           </button>
-          <button style={{...styles.button, ...styles.buttonSecondary}} onClick={() => setView('giftshop')}>Browse Gift Shop</button>
+          <button style={{...styles.button, ...styles.buttonSecondary}} onClick={() => setView('giftshop')}>
+            Visit Gift-Shop 🔐 Fortune Brownies ©2026
+          </button>
         </div>
       )}
 
@@ -337,15 +379,20 @@ export default function App() {
           <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '36px'}}>Fort Knox Academy</h2>
           <div style={styles.price}>M{ACADEMY_PRICE}</div>
           <p style={{textAlign: 'center', color: '#FFA500', marginBottom: '25px', lineHeight: '1.8', fontSize: '20px'}}>
-            Lifetime Access<br/>
-            Master Recipe + 6 Signature Flavors<br/>
+            Pay Once → Lifetime Access<br/>
+            Master Recipe + All Future Guides FREE<br/>
             Cost M100 → Sell M180 → Profit M80 per tray<br/>
             <strong style={{fontSize: '24px'}}>Bake 5 trays/week = M1,600/month</strong>
           </p>
-          {isPaid ? (
+          {isPaidAcademy ? (
             <>
-              <p style={{color: '#00FF00', textAlign: 'center', fontWeight: '800', fontSize: '22px'}}>✅ You have access</p>
-              <button style={styles.button} onClick={() => window.open(ACADEMY_PDF_URL, '_blank')}>Download Founding Recipe PDF</button>
+              <p style={{color: '#00FF00', textAlign: 'center', fontWeight: '800', fontSize: '22px'}}>✅ Lifetime Member Access</p>
+              <button style={styles.button} onClick={() => window.open(ACADEMY_PDF_URL, '_blank')}>
+                Download Founding Recipe PDF
+              </button>
+              <p style={{textAlign: 'center', color: '#FFA500', fontSize: '16px', marginTop: '15px'}}>
+                Future Academy guides auto-unlock here. No extra payment.
+              </p>
             </>
           ) : (
             <button style={styles.button} onClick={handleAcademyPayment} disabled={loading}>
@@ -357,21 +404,42 @@ export default function App() {
 
       {view === 'giftshop' && (
         <div>
-          <h2 style={{textAlign: 'center', color: '#FFD700', marginBottom: '25px', fontSize: '36px'}}>Gift Shop</h2>
+          <h2 style={{textAlign: 'center', color: '#FFD700', marginBottom: '10px', fontSize: '36px'}}>
+            Gift Shop 🔐
+          </h2>
+          <p style={{textAlign: 'center', color: '#FF0000', fontSize: '18px', fontWeight: '700', marginBottom: '25px'}}>
+            Fortune Brownies ©2026 - No Handouts. Pay Per Recipe.
+          </p>
           <div style={{display: 'grid', gap: '20px'}}>
             {products.length === 0 ? (
-              <div style={styles.card}><p style={{textAlign: 'center', color: '#FFA500', fontSize: '20px'}}>New kits dropping soon... 🤍🧡</p></div>
+              <div style={styles.card}><p style={{textAlign: 'center', color: '#FFA500', fontSize: '20px'}}>Loading inventory... 🤍🧡</p></div>
             ) : (
-              products.map(item => (
-                <div key={item.id} style={styles.card}>
-                  <h3 style={{margin: '0 0 15px 0', fontSize: '28px'}}>{item.item_name}</h3>
-                  <div style={{...styles.price, fontSize: '40px'}}>M{item.price_maluti}</div>
-                  {item.description && <p style={{color: '#FFA500', fontSize: '18px', lineHeight: '1.6'}}>{item.description}</p>}
-                  <button style={styles.button} onClick={() => buyGiftShopItem(item)} disabled={loading}>
-                    {loading ? 'Processing...' : `Buy Now - M${item.price_maluti}`}
-                  </button>
-                </div>
-              ))
+              products.map(item => {
+                const alreadyPurchased = purchasedItems.includes(item.id)
+                return (
+                  <div key={item.id} style={styles.card}>
+                    <div style={styles.exclusiveBadge}>EXCLUSIVE OFFER</div>
+                    <h3 style={{margin: '0 0 15px 0', fontSize: '28px'}}>
+                      {item.item_name}
+                      <span style={styles.lockBadge}>🔐 M{item.price_maluti}</span>
+                    </h3>
+                    <div style={{...styles.price, fontSize: '40px'}}>M{item.price_maluti}</div>
+                    {item.description && <p style={{color: '#FFA500', fontSize: '18px', lineHeight: '1.6'}}>{item.description}</p>}
+                    {alreadyPurchased ? (
+                      <>
+                        <p style={{color: '#00FF00', textAlign: 'center', fontWeight: '800', fontSize: '18px'}}>✅ Purchased</p>
+                        <button style={styles.button} onClick={() => buyGiftShopItem(item)}>
+                          Re-Download PDF
+                        </button>
+                      </>
+                    ) : (
+                      <button style={styles.button} onClick={() => buyGiftShopItem(item)} disabled={loading}>
+                        {loading ? 'Processing...' : `Buy Now - M${item.price_maluti}`}
+                      </button>
+                    )}
+                  </div>
+                )
+              })
             )}
           </div>
         </div>
@@ -391,7 +459,7 @@ export default function App() {
               </div>
               <div style={{background: '#000', padding: '20px', borderRadius: '12px', border: '2px solid #FFD700'}}>
                 <div style={{...styles.statNumber, fontSize: '36px'}}>M{giftShopRevenue}</div>
-                <div style={styles.statLabel}>Gift Shop</div>
+                <div style={styles.statLabel}>Gift Shop 🔐</div>
               </div>
               <div style={{background: '#000', padding: '20px', borderRadius: '12px', border: '2px solid #FFD700'}}>
                 <div style={{...styles.statNumber, fontSize: '36px'}}>{totalSignups}</div>
@@ -407,23 +475,21 @@ export default function App() {
                 <thead>
                   <tr>
                     <th style={styles.th}>Email</th>
-                    <th style={styles.th}>Paid Academy</th>
+                    <th style={styles.th}>Academy Paid</th>
                     <th style={styles.th}>Joined Date</th>
-                    <th style={styles.th}>User ID</th>
                   </tr>
                 </thead>
                 <tbody>
                   {allUsers.length === 0 ? (
-                    <tr><td colSpan="4" style={{...styles.td, textAlign: 'center', color: '#FFA500'}}>No members yet</td></tr>
+                    <tr><td colSpan="3" style={{...styles.td, textAlign: 'center', color: '#FFA500'}}>No members yet</td></tr>
                   ) : (
                     allUsers.map(u => (
                       <tr key={u.id}>
                         <td style={styles.td}>{u.email}</td>
                         <td style={{...styles.td, color: u.paid ? '#00FF00' : '#FF0000', fontWeight: '800'}}>
-                          {u.paid ? '✅ YES M250' : '❌ NO'}
+                          {u.paid ? '✅ M250' : '❌ NO'}
                         </td>
                         <td style={styles.td}>{new Date(u.created_at).toLocaleDateString()}</td>
-                        <td style={{...styles.td, fontSize: '14px', color: '#666'}}>{u.id.substring(0,8)}...</td>
                       </tr>
                     ))
                   )}
@@ -442,50 +508,26 @@ export default function App() {
                     <th style={styles.th}>Customer</th>
                     <th style={styles.th}>Product</th>
                     <th style={styles.th}>Amount</th>
-                    <th style={styles.th}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {allPayments.length === 0 ? (
-                    <tr><td colSpan="5" style={{...styles.td, textAlign: 'center', color: '#FFA500'}}>No sales yet - Post launch tonight</td></tr>
+                    <tr><td colSpan="4" style={{...styles.td, textAlign: 'center', color: '#FFA500'}}>No sales yet - Launch tonight</td></tr>
                   ) : (
                     allPayments.map(p => (
                       <tr key={p.id}>
                         <td style={styles.td}>{new Date(p.created_at).toLocaleDateString()}</td>
                         <td style={styles.td}>{p.users?.email || 'Unknown'}</td>
-                        <td style={styles.td}>{p.product_type === 'academy' ? 'Academy M250' : 'Gift Shop'}</td>
+                        <td style={styles.td}>
+                          {p.product_type === 'academy' ? 'Academy M250' : `Red Velvet M${p.amount_maluti}`}
+                        </td>
                         <td style={{...styles.td, color: '#00FF00', fontWeight: '800'}}>M{p.amount_maluti}</td>
-                        <td style={{...styles.td, color: '#00FF00'}}>{p.status}</td>
                       </tr>
                     ))
                   )}
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <div style={styles.card}>
-            <h2 style={{textAlign: 'center', marginTop: 0, fontSize: '32px'}}>🏆 REFERRALS & PAYOUTS 🏆</h2>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Rank</th>
-                  <th style={styles.th}>Earned</th>
-                  <th style={styles.th}>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {referrals.map((ref, i) => (
-                  <tr key={i}>
-                    <td style={styles.td}>{ref.name}</td>
-                    <td style={styles.td}>{ref.rank}</td>
-                    <td style={{...styles.td, color: '#FFD700', fontWeight: '800'}}>M{ref.amount}</td>
-                    <td style={styles.td}>{ref.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       )}
