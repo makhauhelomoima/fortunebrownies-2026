@@ -10,27 +10,43 @@ export default function Admin({ profile }) {
   const [members, setMembers] = useState([])
   const [totalRevenue, setTotalRevenue] = useState(0)
   const [payouts, setPayouts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => { fetchData() }, [])
 
   async function fetchData() {
-    const { data: membersData } = await supabase
-   .from('profiles')
-   .select(`id,email,is_member,created_at,referral_code,referred_by`)
-   .order('created_at', { ascending: false })
-    
-    setMembers(membersData || [])
-    setTotalRevenue((membersData?.filter(m => m.is_member).length || 0) * 250)
+    try {
+      const { data: membersData, error: dbError } = await supabase
+       .from('profiles')
+       .select('id,email,is_member,created_at,referral_code,referred_by')
+       .order('created_at', { ascending: false })
 
-    const payoutMap = {}
-    membersData?.forEach(m => {
-      const refCount = membersData.filter(x => x.referred_by === m.id).length
-      if (refCount > 0) payoutMap[m.email] = refCount * 50
-    })
-    setPayouts(Object.entries(payoutMap))
+      if (dbError) {
+        setError('Database error: ' + dbError.message)
+        setLoading(false)
+        return
+      }
+
+      const safeMembers = membersData || []
+      setMembers(safeMembers)
+      setTotalRevenue(safeMembers.filter(m => m.is_member).length * 250)
+
+      const payoutMap = {}
+      safeMembers.forEach(m => {
+        const refCount = safeMembers.filter(x => x.referred_by === m.id).length
+        if (refCount > 0) payoutMap[m.email] = refCount * 50
+      })
+      setPayouts(Object.entries(payoutMap))
+      setLoading(false)
+    } catch (err) {
+      setError('Failed to load: ' + err.message)
+      setLoading(false)
+    }
   }
 
   const copyReferralLink = (code) => {
+    if (!code) return
     const link = `${window.location.origin}?ref=${code}`
     navigator.clipboard.writeText(link)
     alert(`Link copied:\n${link}`)
@@ -41,6 +57,28 @@ export default function Admin({ profile }) {
     window.location.href = '/'
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-[#fbbf24] flex items-center justify-center">
+        Loading Fort Knox Vault...
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-red-500 flex flex-col items-center justify-center px-4">
+        <div className="text-center">
+          <p className="font-bold mb-2">CEO ALERT</p>
+          <p className="text-sm">{error}</p>
+          <button onClick={signOut} className="border border-red-500 px-3 py-1 rounded text-xs mt-4">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-black text-[#fbbf24] w-full overflow-x-hidden">
       <div className="w-full px-3 py-4">
@@ -48,6 +86,7 @@ export default function Admin({ profile }) {
           <div>
             <h1 className="text-xs font-bold">Fortune Brownies ©2026 <span className="bg-red-600 text-white px-1 ml-1 text-xs rounded">CEO</span></h1>
             <h2 className="text-xs font-bold">FORT KNOX ACADEMY</h2>
+            <p className="text-xs opacity-70">{profile?.email}</p>
           </div>
           <button onClick={signOut} className="border border-[#fbbf24] px-2 py-1 rounded text-xs">Sign Out</button>
         </div>
@@ -83,15 +122,25 @@ export default function Admin({ profile }) {
           <div className="grid grid-cols-5 text-xs border-b border-[#fbbf24] pb-1 mb-1 gap-1">
             <div>Email</div><div>M250</div><div>Joined</div><div>Ref Code</div><div>Link</div>
           </div>
-          {members.map((m) => (
-            <div key={m.id} className="grid grid-cols-5 text-xs py-1 border-b border-[#fbbf24]/30 gap-1 items-center">
-              <div className="break-all">{m.email.split('@')[0]}</div>
-              <div>{m.is_member? '✅' : '❌'}</div>
-              <div>{new Date(m.created_at).toLocaleDateString()}</div>
-              <div className="font-bold">{m.referral_code || 'N/A'}</div>
-              <button onClick={() => copyReferralLink(m.referral_code)} disabled={!m.referral_code} className="bg-[#fbbf24] text-black px-1 py-0.5 rounded text-[9px] disabled:opacity-30">Copy</button>
-            </div>
-          ))}
+          {members.length === 0? (
+            <div className="text-center text-xs py-2">No members yet</div>
+          ) : (
+            members.map((m) => (
+              <div key={m.id} className="grid grid-cols-5 text-xs py-1 border-b border-[#fbbf24]/30 gap-1 items-center">
+                <div className="break-all">{m.email?.split('@')[0]}</div>
+                <div>{m.is_member? '✅' : '❌'}</div>
+                <div>{m.created_at? new Date(m.created_at).toLocaleDateString() : 'N/A'}</div>
+                <div className="font-bold">{m.referral_code || 'N/A'}</div>
+                <button 
+                  onClick={() => copyReferralLink(m.referral_code)} 
+                  disabled={!m.referral_code} 
+                  className="bg-[#fbbf24] text-black px-1 py-0.5 rounded text-[9px] disabled:opacity-30"
+                >
+                  Copy
+                </button>
+              </div>
+            ))
+          )}
         </div>
         <hr className="border-[#fbbf24] mb-3" />
         <div className="text-center text-xs">
