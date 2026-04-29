@@ -1,19 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import ResetPassword from './pages/ResetPassword'
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-      </Routes>
-    </BrowserRouter>
-  )
+export default function App() {
+  const path = window.location.pathname
+  if (path === '/signup') return <Signup />
+  if (path === '/dashboard') return <Dashboard />
+  if (path === '/reset-password') return <ResetPassword />
+  return <Login />
 }
