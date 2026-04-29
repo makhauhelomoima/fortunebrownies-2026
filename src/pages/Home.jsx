@@ -1,7 +1,19 @@
-import { useState } from 'react'
-
 export default function Home() {
-  const [showPayments, setShowPayments] = useState(false)
+  const handleEcocash = () => {
+    window.location.href = 'tel:*199#'
+  }
+
+  const handleMpesa = () => {
+    window.location.href = 'tel:*200#'
+  }
+
+  const handlePostBank = () => {
+    alert('Post Bank Payment:\n\nDial: *120*223#\nOR\nEFT to:\nFortune Brownies\nAcc: 123456789\nBranch: 123456\n\nSend proof to WhatsApp: +266 XXXX XXXX')
+  }
+
+  const handleLogin = () => {
+    alert('Login coming tonight at 8PM.\n\nM250 Members get Dashboard access after payment.\n\nSend payment proof to WhatsApp to get instant access.')
+  }
 
   return (
     <div className="min-h-screen bg-black text-yellow-400 p-4">
@@ -13,7 +25,10 @@ export default function Home() {
             <h1 className="text-lg font-bold">Fortune Brownies ©2026</h1>
             <h2 className="text-md">FORT KNOX ACADEMY</h2>
           </div>
-          <button className="bg-yellow-400 text-black px-4 py-1 rounded font-bold text-sm">
+          <button 
+            onClick={handleLogin}
+            className="bg-yellow-400 text-black px-4 py-1 rounded font-bold text-sm"
+          >
             Login
           </button>
         </div>
@@ -45,15 +60,24 @@ export default function Home() {
           <div className="text-center mb-4">
             <p className="font-bold mb-3">Get Access - Choose Payment:</p>
             
-            <button className="w-full bg-yellow-400 text-black py-3 rounded mb-2 font-bold">
+            <button 
+              onClick={handleEcocash}
+              className="w-full bg-yellow-400 text-black py-3 rounded mb-2 font-bold active:bg-yellow-500"
+            >
               1. Ecocash - *199#
             </button>
             
-            <button className="w-full bg-yellow-400 text-black py-3 rounded mb-2 font-bold">
+            <button 
+              onClick={handleMpesa}
+              className="w-full bg-yellow-400 text-black py-3 rounded mb-2 font-bold active:bg-yellow-500"
+            >
               2. Mpesa - *200#
             </button>
             
-            <button className="w-full bg-yellow-400 text-black py-3 rounded mb-4 font-bold">
+            <button 
+              onClick={handlePostBank}
+              className="w-full bg-yellow-400 text-black py-3 rounded mb-4 font-bold active:bg-yellow-500"
+            >
               3. Post Bank - *120*223# / EFT
             </button>
           </div>
